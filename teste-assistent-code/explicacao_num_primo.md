@@ -3,37 +3,54 @@
 ## Código da Função
 
 ```python
-def is_prime(n):
-    if n <= 1:
+def is_prime(number: int) -> bool:
+    """Verifica se um número inteiro é primo."""
+    if number <= 1:
         return False
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
+
+    max_divisor = int(number**0.5)
+    return all(number % divisor != 0 for divisor in range(2, max_divisor + 1))
+
+
+if __name__ == "__main__":
+    import sys
+
+    try:
+        value = int(sys.argv[1])
+    except (IndexError, ValueError):
+        print("Uso: python num_primos.py <numero>")
+    else:
+        print(is_prime(value))
 ```
 
 ## Explicação Passo a Passo
 
-1. **Definição da Função**: A função `is_prime(n)` recebe um número inteiro `n` como parâmetro e retorna `True` se o número for primo, ou `False` caso contrário.
+1. **Definição da Função**: A função `is_prime(number: int) -> bool` aceita um número inteiro e devolve `True` se ele for primo, ou `False` caso contrário.
 
-2. **Verificação Inicial**: 
-   - Se `n` for menor ou igual a 1, a função retorna `False` imediatamente. Isso porque números primos são definidos como maiores que 1.
+2. **Verificação Inicial**:
+   - Se o valor for menor ou igual a 1, a função retorna `False` imediatamente, já que apenas inteiros maiores que 1 podem ser primos.
 
-3. **Loop de Verificação**:
-   - O loop `for i in range(2, int(n**0.5) + 1)` itera de 2 até a raiz quadrada de `n` (arredondada para baixo).
-   - Para cada `i`, verifica se `n` é divisível por `i` (usando `n % i == 0`).
-   - Se encontrar um divisor, retorna `False`, pois o número não é primo.
+3. **Limite de Verificação**:
+   - A variável `max_divisor` recebe a parte inteira da raiz quadrada de `number`.
+   - Isso reduz a quantidade de divisões necessárias, pois divisores aparecem em pares e não é preciso verificar além da raiz quadrada.
 
-4. **Retorno Final**:
-   - Se nenhum divisor for encontrado no loop, a função retorna `True`, indicando que o número é primo.
+4. **Verificação com Expressão Generator**:
+   - A expressão `all(number % divisor != 0 for divisor in range(2, max_divisor + 1))` verifica se nenhum divisor válido divide `number` sem resto.
+   - Se houver algum divisor, a função retorna `False`; caso contrário, retorna `True`.
 
-## Por que essa Abordagem é Eficiente?
+5. **Execução Direta**:
+   - O bloco `if __name__ == "__main__"` permite executar o arquivo diretamente no terminal.
+   - Ele recebe um argumento de linha de comando e imprime o resultado da função.
 
-- Verificar apenas até a raiz quadrada de `n` é suficiente porque se `n` tem um divisor maior que sua raiz quadrada, o outro divisor correspondente será menor ou igual à raiz quadrada.
-- Isso reduz significativamente o número de verificações necessárias, especialmente para números grandes.
+## Por que esse Código está no padrão Clean Code?
+
+- Usa nomes de variáveis claros e descritivos: `number`, `max_divisor`, `divisor`.
+- Inclui uma docstring curta explicando o propósito da função.
+- Evita loops e condições redundantes com uma expressão `all(...)` simples.
+- Separa a lógica da função da parte de entrada/saída no bloco principal.
 
 ## Exemplos de Uso
 
-- `is_prime(7)` retorna `True` (7 é primo).
-- `is_prime(4)` retorna `False` (4 não é primo, pois é divisível por 2).
-- `is_prime(1)` retorna `False` (1 não é primo).
+- `python num_primos.py 7` imprime `True`.
+- `python num_primos.py 4` imprime `False`.
+- `python num_primos.py 1` imprime `False`.
